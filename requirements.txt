@@ -1,0 +1,7 @@
+pyTelegramBotAPI
+google-generativeai
+pyairtable
+streamlit
+pandas
+plotly
+python-dotenv
