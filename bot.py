@@ -28,7 +28,13 @@ def process_message(message):
     status = bot.reply_to(message, "⚙️ Parsing...")
     
     # We inject today's actual date into the prompt so the AI knows what "yesterday" means
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    message = "Order date: 2026-09-06"
+    # Extract the date string
+    date_str = message.split(": ")[1] 
+
+    # Parse into a datetime object
+    today_str = datetime.strptime(date_str, "%Y-%m-%d")
+    print(today_str.strftime("%B %d, %Y")) # Output: September 06, 2026
     
     EXTRACTION_PROMPT = f"""
     Extract dental clinic data into this JSON schema:
