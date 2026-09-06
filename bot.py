@@ -10,7 +10,9 @@ load_dotenv()
 
 bot = telebot.TeleBot(os.getenv("TELEGRAM_BOT_TOKEN"))
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-3.6-flash", generation_config={"response_mime_type": "application/json"})
+
+# Using 1.5-flash so you never hit the free-tier quota limits
+model = genai.GenerativeModel("gemini-1.5-flash", generation_config={"response_mime_type": "application/json"})
 
 airtable = Api(os.getenv("AIRTABLE_API_KEY"))
 table = airtable.table(os.getenv("AIRTABLE_BASE_ID"), os.getenv("AIRTABLE_TABLE_NAME"))
@@ -27,14 +29,7 @@ def process_message(message):
         return
     status = bot.reply_to(message, "⚙️ Parsing...")
     
-    # We inject today's actual date into the prompt so the AI knows what "yesterday" means
-    message = "Order date: 2026-09-06"
-    # Extract the date string
-    date_str = message.split(": ")[1] 
-
-    # Parse into a datetime object
-    today_str = datetime.strptime(date_str, "%Y-%m-%d")
-    print(today_str.strftime("%B %d, %Y")) # Output: September 06, 2026
+    today_str = datetime.now().strftime("%Y-%m-%d")
     
     EXTRACTION_PROMPT = f"""
     Extract dental clinic data into this JSON schema:
